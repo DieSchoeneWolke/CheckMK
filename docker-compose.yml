@@ -1,0 +1,24 @@
+version: '3.3'
+services:
+ checkmk:
+    image: 'checkmk/check-mk-free:2.1.0-latest'
+    ports:
+     - '32512:5000'
+     - '32513:8000'
+     - '162:165/udp' #SNMP trap
+     - '514:514' #syslog
+     - '514:514/udp'
+    tmpfs: '/opt/omd/sites/cmk/tmp:uid=1000,gid=1000'
+    environment:
+     - CMK_PASSWORD=${PASS1}
+#     - CMK_SITE_ID=ChangeIfYouWant #change cmk in tmpfs
+    volumes:
+     - '/etc/localtime:/etc/localtime:ro'
+     - '${VOLUME_PATH}/Checkmk:/omd/sites'
+    networks:
+      - proxied
+    restart: always
+
+networks:
+  proxied:
+    external: true
